@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="Style_2.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <title>Document</title>
+</head>
+<body>
+  <header class="barra-superior">
+    <img src="assets/Logo_Empren.png" alt="Logo" class="logo">
+  </header>
+
+  <div class="container">
+    <p class="p">Registro</p>
+
+    <!-- ÚNICO formulario -->
+    <form id="registroForm" novalidate>
+      <label for="name"></label>
+      <input type="text" id="name" name="Nombre" required placeholder=" Usuario">
+
+      <label for="email"></label>
+      <input type="email" id="email" name="Correo" required placeholder=" Correo">
+
+      <label for="password"></label>
+      <div class="input-group">
+        <input type="password" id="password" name="Contraseña" required placeholder=" Contraseña">
+        <i class="bx bx-show" id="togglePassword"></i>
+      </div>
+
+      <label for="rol"></label>
+      <select id="rol" name="rol" required>
+        <option value=""> Seleciona Tu rol </option>
+        <option value="admin">Administrador</option>
+        <option value="user">Usuario</option>
+      </select>
+
+      <button type="submit" class="loginBtn">Bienvenido</button>
+    </form>
+
+    <p class="registro">
+      ¿Ya tienes cuenta? <a href="http://127.0.0.1:5500/Index.html">Inicia sesión</a>
+    </p>
+  </div>
+
+  <script src="Logica_2.js" defer></script>
+</body>
+</html>
