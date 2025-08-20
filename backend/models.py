@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, Float, DECIMAL
 from sqlalchemy.orm import relationship
 from db import Base
 
@@ -59,11 +59,11 @@ class Reporte_Ventas (Base):
 
     usuario = relationship("Usuario")
     producto = relationship("Producto")
-    venta = relationship("RegistroVenta")
+    venta = relationship("Registro_Ventas")
 
 
 class Reporte_Ganancias (Base):
-    __tablename__ = "reporte_ventas"
+    __tablename__ = "reporte_ganancias"
 
     Id_Reporte = Column (Integer, primary_key=True, index=True)
     Fecha = Column (Date, nullable=False)
@@ -72,7 +72,7 @@ class Reporte_Ganancias (Base):
     Id_Metodo = Column (Integer, ForeignKey("Usuarios.Id_Usuarios"), nullable=False)
     Id_Productos = Column (Integer, ForeignKey("Usuarios.Id_Usuarios"), nullable=False)
 
-    venta = relationship("RegistroVenta")
+    venta = relationship("Registro_Ventas")
     metodo_pago = relationship("MetodoPago")
     producto = relationship("Producto")
 
@@ -89,7 +89,7 @@ class ReporteDePedido(Base):
     Id_Venta = Column(Integer, ForeignKey("Registro_Ventas.Id_Venta"), nullable=False)
 
     usuario = relationship("Usuario")
-    venta = relationship("RegistroVenta")
+    venta = relationship("Registro_Ventas")
 
 
 
@@ -103,7 +103,7 @@ class RegistroGasto(Base):
     Id_Venta = Column(Integer, ForeignKey("Registro_Ventas.Id_Venta"), nullable=False)
 
     # Relación con ventas
-    venta = relationship("RegistroVenta")
+    venta = relationship("Registro_Ventas")
 
 
 
