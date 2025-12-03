@@ -1,26 +1,29 @@
 import express from "express";
-import { registerUser, loginUser } from "../controllers/user.controller.js";
+import {
+  registerUsarios,
+  loginUsarios,
+  verifyEmailCode,
+  getUsarios,
+  addUsarios,
+  editUsarios,
+  deleteUsarios,
+  getUsariosByIdController,
+} from "../controllers/user.controller.js";
+
 import { verificarToken } from "../middlewares/authMiddleware.js";
-import { getUsers, getUser, addUser, editUser, deleteUser } from "../controllers/user.controller.js";
+
 const router = express.Router();
 
+// 🌟 AUTENTICACIÓN
+router.post("/register", registerUsarios);     // Registrar usuario + enviar código
+router.post("/verify", verifyEmailCode);       // Verificar código de email
+router.post("/login", loginUsarios);           // Iniciar sesión
 
-router.post("/register", registerUser);
-
-
-// Ruta login
-router.post("/login", loginUser);
-
-
-// Ejemplo de ruta protegida
-router.get("/perfil", verificarToken, (req, res) => {
-  res.json({ message: "Perfil del usuario", user: req.user });
-});
-
-router.get("/", getUsers);          // GET all
-router.get("/:id", getUser);       // GET one
-router.post("/", addUser);         // CREATE
-router.put("/:id", editUser);      // UPDATE
-router.delete("/:id", deleteUser); // DELETE
+// 🌟 CRUD DE USUARIOS (protegido con token)
+router.get("/", verificarToken, getUsarios);               // Obtener todos
+router.get("/:id", verificarToken, getUsariosByIdController);  
+router.post("/", verificarToken, addUsarios);  
+router.put("/:id", verificarToken, editUsarios);
+router.delete("/:id", verificarToken, deleteUsarios);
 
 export default router;

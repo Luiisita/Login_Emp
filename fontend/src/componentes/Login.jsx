@@ -1,23 +1,86 @@
 import React, { useState } from "react";
 import "./Login.css";
-<img src="/assets/Logo_Empren.png" alt="Logo" className="logo" />
-
 
 function Login() {
+  const [Email, setEmail] = useState("");
+  const [Contraseña, setContraseña] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Iniciando sesión...");
+    try {
+      const response = await fetch("http://localhost:4000/api/Usuarios/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+           Email: Email,
+            Contraseña: Contraseña
+        }),
+      });
+      const text = await response.text();
+      console.log("RESPUESTA DEL SERVIDOR ----->", text);
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("❌ No es JSON válido");
+        return alert("El servidor no está enviando JSON");
+      }
+      if (!response.ok) {
+        alert("❌ " + data.message);
+        return;
+      }
+      alert("✅ Sesión iniciada correctamente");
+      console.log(data);
+      // Ejemplo para guardar token
+      // localStorage.setItem("token", data.token);
+      //
+    } catch (error) {
+      console.error(error);
+      alert(" Error conectando con el servidor");
+    }
   };
 
   return (
     <>
+      {/* Overlay */}
+      {menuOpen && (
+        <div className="overlay" onClick={toggleMenu}></div>
+      )}
+
+      {/* Menú Lateral */}
+      <div className={`menu-lateral ${menuOpen ? 'active' : ''}`}>
+        <div className="menu-header">
+          <span className="menu-close" onClick={toggleMenu}>←</span>
+          <span className="menu-title">Menú</span>
+          <div className="menu-logo-small"></div>
+        </div>
+        <ul>
+          <li><a href="#usuarios">Usuarios</a></li>
+          <li><a href="#inventario">Inventario</a></li>
+          <li><a href="#registro-ventas">Registro De Ventas</a></li>
+          <li><a href="#reporte-ventas">Reporte De Ventas</a></li>
+          <li><a href="#registro-gastos">Registro De Gastos</a></li>
+          <li><a href="#reporte-gastos">Reporte De Gastos</a></li>
+          <li><a href="#reporte-ganancias">Reporte De Ganancias</a></li>
+          <li><a href="#ajustes">Ajustes</a></li>
+        </ul>
+      </div>
+
+      {/* Barra Superior */}
       <header className="barra-superior">
+        <span className="menu-icon" onClick={toggleMenu}>☰</span>
         <img src="/assets/Logo_Empren.png" alt="Logo" className="logo" />
       </header>
 
@@ -29,32 +92,42 @@ function Login() {
         </p>
         <img
           src="/assets/image_1.png"
-          alt="tabla"
+          alt=""
           height="200"
           width="200"
           id="tabla"
         />
-
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="Nombre" required placeholder=" Usuario" />
-
+        <form onSubmit={handleSubmit} autoComplete="off">
+          
+          {/* CAMPO Email */}
+          <input
+            type="Email"
+            name="Email"
+            required
+            placeholder="Correo electrónico"
+            value={Email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="off"
+          />
+          {/* CAMPO CONTRASEÑA */}
           <div className="input-group">
             <input
               type={showPassword ? "text" : "password"}
               name="Contraseña"
               required
-              placeholder=" Contraseña"
+              placeholder="Contraseña"
+              value={Contraseña}
+              onChange={(e) => setContraseña(e.target.value)}
+              autoComplete="new-password"
             />
             <i
               className={`bx ${showPassword ? "bx-hide" : "bx-show"}`}
               onClick={togglePassword}
             ></i>
           </div>
-
           <p className="recuperar">
             <a href="#">¿Olvidaste tu contraseña?</a>
           </p>
-
           <button type="submit" id="loginBtn">
             Iniciar Sesión
           </button>

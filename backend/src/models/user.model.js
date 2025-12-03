@@ -1,43 +1,39 @@
 import pool from "../config/db.js"; //  conexión a MySQL
 
 // Obtener todos los usuarios
-export const getAllUsers = async () => {
-  const [rows] = await pool.query("SELECT * FROM users");
+export const getAllUsarios = async () => {
+  const [rows] = await pool.query("SELECT * FROM Usuarios");
   return rows;
 };
 
-// Obtener usuario por ID
-export const getUserById = async (id) => {
-  const [rows] = await pool.query("SELECT Id_Usuarios, Nombre, Email FROM users WHERE Id_Usuarios = ?", [id]);
+export const getUsariosById = async (id) => {
+  const [rows] = await pool.query(
+    "SELECT Id_Usuarios, Nombre, Email   FROM Usuarios WHERE Id_Usuarios = ?",
+    [id]
+  );
   return rows[0];
 };
 
-// Crear un nuevo usuario
-export const createUser = async (userData) => {
-  const { nombre, email, contrasena } = userData;
-
+export const addUsariosBD = async ({ nombre, Email  , Contraseña }) => {
   const [result] = await pool.query(
-    "INSERT INTO users (nombre, email, contrasena) VALUES (?, ?, ?)",
-    [nombre, email, contrasena]
+    "INSERT INTO Usuarios (Nombre, Email  , Contraseña) VALUES (?, ?, ?)",
+    [nombre, Email , Contraseña]
   );
 
-  return { id: result.insertId, nombre, email};
+  return { id: result.insertId, nombre, Email  };
 };
 
-export const updateUser = async (id, { nombre, email }) => {
+
+export const updateUsarios = async (id, { nombre, Email  }) => {
   await pool.query(
-    "UPDATE users SET nombre = ?, email = ? WHERE Id_Usuarios = ?",
-    [nombre, email, id]
+    "UPDATE Usuarios SET Nombre = ?, Email  = ? WHERE Id_Usuarios = ?",
+    [nombre, Email , id]
   );
-  return { id: Number(id), nombre, email };
+  return { id: Number(id), nombre, Email  };
 };
 
-export const deleteUser = async (id) => {
-  await pool.query("DELETE FROM users WHERE Id_Usuarios = ?", [id]);
-  return;
+export const deleteUsarios = async (id) => {
+  await pool.query("DELETE FROM Usuarios WHERE Id_Usuarios = ?", [id]);
+  return true;
 };
-
-
-
-
 

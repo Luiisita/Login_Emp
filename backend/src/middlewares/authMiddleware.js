@@ -4,15 +4,29 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const verificarToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1]; // "Bearer <token>"
+  try {
+    const authHeader = req.headers["authorization"];
 
-  if (!token) return res.status(403).json({ message: "Token requerido" });
+    if (!authHeader) {
+      return res.status(401).json({ message: "No se envió el token" });
+    }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: "Token inválido" });
+    const token = authHeader.split(" ")[1]; // Formato: "Bearer token"
 
-    req.user = user;
-    next();
-  });
+    if (!token) {
+      return res.status(401).json({ message: "Token requerido" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
+      if (err) {
+        return res.status(403).json({ message: "Token inválido o expirado" });
+      }
+
+      req.user = data; // datos del usuario dentro del token
+      next();
+    });
+  } catch (error) {
+    console.error("Error en verificarToken:", error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
 };

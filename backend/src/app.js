@@ -12,7 +12,8 @@ app.use(express.json());
 
 
 // Rutas
-app.use("/api/users", userRoutes); 
+app.use("/api/Usuarios", userRoutes);
+
 
 
 // Ruta básica 

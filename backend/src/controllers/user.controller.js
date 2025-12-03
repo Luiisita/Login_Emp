@@ -1,198 +1,246 @@
-// src/controllers/user.controller.js
-
-import {
-  getAllUsers, getUserById,
-  createUser,updateUser, deleteUser as deleteUserModel,
-} from "../models/user.model.js";
-import pool from "../config/db.js";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import db from "../config/db.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
-
-
-//TOKEN 
-
-
-dotenv.config();
-
-export const loginUser = async (req, res) => {
-  try {
-    // 1️⃣ Verificar que llegan datos
-    console.log("📩 req.body recibido:", req.body);
-    const { email, contrasena } = req.body;
-
-    if (!email || !contrasena) {
-      return res.status(400).json({ message: "Faltan campos: email y/o contraseña" });
+// ===============================
+// CONFIGURAR TRANSPORT DE EMAIL
+// ===============================
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
+});
 
-    // 2️⃣ Buscar usuario en la BD
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-    console.log("🔍 Resultado de la consulta:", rows);
 
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+// ===============================
+// REGISTRO DE USUARIO
+// ===============================
+export const registerUsarios = async (req, res) => {
+    const { Nombre, Email, Telefono, Contraseña, Rol, Estado } = req.body;
+
+    try {
+        const [exist] = await db.query(
+            "SELECT * FROM Usuarios WHERE Email = ?",
+            [Email]
+        );
+
+        if (exist.length > 0) {
+            return res.status(400).json({ msg: "El correo ya está registrado" });
+        }
+
+        const hashedPassword = await bcrypt.hash(Contraseña, 10);
+
+        // Generar código de verificación
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 15 * 60000); // 15 minutos
+
+        await db.query(
+            `INSERT INTO Usuarios 
+            (Nombre, Email, Telefono, Contraseña, Rol, Estado, verification_code, verification_expires_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [Nombre, Email, Telefono, hashedPassword, Rol, Estado, verificationCode, expiresAt]
+        );
+
+        // Enviar el email
+        await transporter.sendMail({
+            from: "Emprendly ✔️",
+            to: Email,
+            subject: "Código de verificación",
+            text: `Tu código de verificación es: ${verificationCode}`
+        });
+
+        res.json({ msg: "Usuario registrado. Código enviado al correo." });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Error en el servidor" });
     }
+};
 
-    const user = rows[0];
+// ===============================
+// VERIFICAR CÓDIGO
+// ===============================
+export const verifyEmailCode = async (req, res) => {
+    const { Email, code } = req.body;
 
-    // 3️⃣ Comparar contraseñas
-   const isValid = await bcrypt.compare(contrasena, user.Contrasena);
+    try {
+        const [user] = await db.query(
+            `SELECT * FROM Usuarios WHERE Email = ?`,
+            [Email]
+        );
 
-    console.log("🔑 Contraseña válida?", isValid);
+        if (user.length === 0) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
 
-    if (!isValid) {
-      return res.status(401).json({ message: "Contraseña incorrecta" });
+        const u = user[0];
+
+        if (u.verification_code !== code) {
+            return res.status(400).json({ msg: "Código incorrecto" });
+        }
+
+        if (new Date(u.verification_expires_at) < new Date()) {
+            return res.status(400).json({ msg: "El código expiró" });
+        }
+
+        await db.query(
+            `UPDATE Usuarios 
+             SET is_verified = 1, verification_code = NULL, verification_expires_at = NULL
+             WHERE Email = ?`,
+             [Email]
+        );
+
+        res.json({ msg: "Correo verificado correctamente" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Error en el servidor" });
     }
+};
 
-    // 4️⃣ Generar token
-    const userId = user.Id_Usuarios;
-    if (!userId) {
-      console.error("⚠️ No se encontró campo ID en el usuario:", user);
-      return res.status(500).json({ message: "Error interno: no se encontró el ID del usuario" });
+// ===============================
+// LOGIN
+// ===============================
+export const loginUsarios = async (req, res) => {
+    const { Email, Contraseña } = req.body;
+
+    try {
+        const [rows] = await db.query(
+            "SELECT * FROM Usuarios WHERE Email = ?",
+            [Email]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ msg: "Correo no registrado" });
+        }
+
+        const user = rows[0];
+
+        if (user.is_verified === 0) {
+            return res.status(400).json({ msg: "El correo no está verificado" });
+        }
+
+        const passMatch = await bcrypt.compare(Contraseña, user.Contraseña);
+
+        if (!passMatch) {
+            return res.status(400).json({ msg: "Contraseña incorrecta" });
+        }
+
+        const token = jwt.sign(
+            { id: user.Id_Usuarios, Email: user.Email, Rol: user.Rol },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        return res.json({
+            msg: "Login exitoso",
+            token,
+            usuario: {
+                id: user.Id_Usuarios,
+                nombre: user.Nombre,
+                email: user.Email,
+                rol: user.Rol
+            }
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Error en el servidor" });
     }
-
-    const token = jwt.sign(
-      { id: user.Id_Usuarios, email: user.Email },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES || "1h" }
-    );
-
-    console.log("✅ Token generado:", token);
-
-    // 5️⃣ Respuesta final
-    res.json({
-      message: "Login exitoso",
-      token,
-      usuario: {
-        id: user.Id_Usuarios,
-        nombre: user.Nombre,
-        email: user.Email
-      }
-    });
-  } catch (error) {
-    console.error("❌ Error en login:", error);
-    res.status(500).json({ message: "Error en el login", error: error.message });
-  }
 };
 
 
 
-export const registerUser = async (req, res) => {
-  const { nombre, email, contrasena } = req.body;
-  try {
-    // 1) comprobar si ya existe
-    const [exists] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (exists.length) return res.status(400).json({ message: "Usuario ya existe" });
-
-    // 2) generar hash
-    const salt = await bcrypt.genSalt(10);        // coste 10 (suficiente)
-    const hash = await bcrypt.hash(contrasena, salt);
-
-    // 3) guardar en la BD el hash, no la contraseña en texto plano
-    const [result] = await pool.query(
-      "INSERT INTO users (nombre, email, Contrasena) VALUES (?, ?, ?)",
-      [nombre, email, hash]
-    );
-
-    // 4) opcional: generar token al registrarse
-    const userId = result.insertId;
-    const token = jwt.sign({ id: userId, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES });
-
-    res.status(201).json({
-      message: "Usuario creado",
-      usuario: { id: userId, nombre, email },
-      token
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al registrar usuario", error: error.message });
-  }
-};
-
-
-
-
-
-
-// PARA HACER PRUEBAS DEL CRUD 
-
-
-// dotenv.config();
-// GET /users / SALEN TODOS LOS USUARIOS
-export const getUsers = async (req, res) => {
-  try {
-    const users = await getAllUsers();
-    res.json(users);
-  } catch (error) {
-    console.error("Error getUsers:", error);
-    res.status(500).json({ message: "Error al obtener usuarios", error: error.message });
-  }
-};
-
-// GET /users/:id / BUSCAR POR ID
-export const getUser = async (req, res) => {
-  try {
-    const user = await getUserById(req.params.id);
-    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-    res.json(user);
-  } catch (error) {
-    console.error("Error getUser:", error);
-    res.status(500).json({ message: "Error al obtener usuario", error: error.message });
-  }
-};
-
-// POST /users / CREAR
-export const addUser = async (req, res) => {
-  try {
-    console.log("📩 Body recibido:", req.body);
-    const { nombre, email, contrasena } = req.body;
-
-    if (!nombre || !email || !contrasena) {
-      return res.status(400).json({ error: "Faltan campos: nombre, email y contrasena" });
+// ===============================
+// OBTENER TODOS LOS USUARIOS
+// ===============================
+export const getUsarios = async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM Usuarios");
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
     }
-
-    const newUser = await createUser({ nombre, email, contrasena });
-    res.status(201).json(newUser);
-  } catch (err) {
-    console.error("❌ Error en addUser:", err);
-    if (err && err.code === "ER_DUP_ENTRY") {
-      return res.status(409).json({ error: "El email ya está registrado" });
-    }
-    res.status(500).json({ error: "Error al crear usuario", detalle: err.message });
-  }
 };
 
-// PUT /users/:id / ACTUALIZAR 
-export const editUser = async (req, res) => {
-  try {
+// ===============================
+// OBTENER USUARIO POR ID
+// ===============================
+export const getUsariosByIdController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const [rows] = await db.query(
+            "SELECT * FROM Usuarios WHERE Id_Usuarios = ?",
+            [id]
+        );
+
+        res.json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+};
+
+// ===============================
+// AGREGAR USUARIO (ADMIN)
+// ===============================
+export const addUsarios = async (req, res) => {
+    const { Nombre, Email, Telefono, Contraseña, Rol, Estado } = req.body;
+
+    try {
+        const hashedPassword = await bcrypt.hash(Contraseña, 10);
+
+        await db.query(
+            `INSERT INTO Usuarios (Nombre, Email, Telefono, Contraseña, Rol, Estado, is_verified)
+             VALUES (?, ?, ?, ?, ?, ?, 1)`,
+            [Nombre, Email, Telefono, hashedPassword, Rol, Estado]
+        );
+
+        res.json({ msg: "Usuario agregado correctamente" });
+
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+};
+
+// ===============================
+// EDITAR USUARIO
+// ===============================
+export const editUsarios = async (req, res) => {
     const { id } = req.params;
-    const { nombre, email, contrasena } = req.body;
+    const { Nombre, Email, Telefono, Rol, Estado } = req.body;
 
-    if (!nombre || !email) {
-      return res.status(400).json({ error: "Faltan campos: nombre y email" });
+    try {
+        await db.query(
+            `UPDATE Usuarios SET Nombre=?, Email=?, Telefono=?, Rol=?, Estado=?
+             WHERE Id_Usuarios = ?`,
+            [Nombre, Email, Telefono, Rol, Estado, id]
+        );
+
+        res.json({ msg: "Usuario actualizado" });
+
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
     }
-
-    const existing = await getUserById(id);
-    if (!existing) return res.status(404).json({ error: "Usuario no encontrado" });
-
-    const updated = await updateUser(id, { nombre, email, contrasena });
-    res.json({ message: "Usuario actualizado", updated });
-  } catch (err) {
-    console.error("Error editUser:", err);
-    res.status(500).json({ error: "Error al actualizar usuario", detalle: err.message });
-  }
 };
 
-// DELETE /users/:id /ELIMINAR
-export const deleteUser = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const deleted = await deleteUserModel(id);
-    if (!deleted) return res.status(404).json({ error: "Usuario no encontrado" });
-    res.json({ message: "Usuario eliminado correctamente" });
-  } catch (err) {
-    console.error("Error deleteUser:", err);
-    res.status(500).json({ error: "Error al eliminar usuario", detalle: err.message });
-  }
+// ===============================
+// ELIMINAR USUARIO
+// ===============================
+export const deleteUsarios = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await db.query(
+            "DELETE FROM Usuarios WHERE Id_Usuarios = ?",
+            [id]
+        );
+
+        res.json({ msg: "Usuario eliminado" });
+
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
 };
