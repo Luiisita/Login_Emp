@@ -26,12 +26,14 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/api/Usuarios/register", {
-        nombre: form.nombre,
-        Email: form.email,
-        Contraseña: form.contraseña,
-        rol: form.rol
-      });
+     await axios.post("http://localhost:4000/api/Usuarios/register", {
+      Nombre: form.nombre,
+      Email: form.email,
+      Telefono: null,               // porque tu formulario NO lo pide
+       Contraseña: form.contraseña,
+       Rol: form.rol,
+       Estado: "Activo"              // si tu tabla lo requiere
+});
       alert("✅ Usuario registrado con éxito");
       setForm({
         nombre: "",
