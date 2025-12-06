@@ -14,22 +14,22 @@ export const getUsariosById = async (id) => {
   return rows[0];
 };
 
-export const addUsariosBD = async ({ nombre, Email  , Contraseña }) => {
+export const addUsariosBD = async ({ Nombre, Email  , Contraseña }) => {
   const [result] = await pool.query(
     "INSERT INTO Usuarios (Nombre, Email  , Contraseña) VALUES (?, ?, ?)",
-    [nombre, Email , Contraseña]
+    [Nombre, Email , Contraseña]
   );
 
-  return { id: result.insertId, nombre, Email  };
+  return { id: result.insertId, Nombre, Email  };
 };
 
 
-export const updateUsarios = async (id, { nombre, Email  }) => {
+export const updateUsarios = async (id, { Nombre, Email  }) => {
   await pool.query(
     "UPDATE Usuarios SET Nombre = ?, Email  = ? WHERE Id_Usuarios = ?",
-    [nombre, Email , id]
+    [Nombre, Email , id]
   );
-  return { id: Number(id), nombre, Email  };
+  return { id: Number(id), Nombre, Email  };
 };
 
 export const deleteUsarios = async (id) => {
@@ -37,3 +37,35 @@ export const deleteUsarios = async (id) => {
   return true;
 };
 
+// // verificar codigo
+
+export const verifyEmailCode = async (req, res) => {
+  try {
+    const { Email, codigo } = req.body;
+
+    const [rows] = await pool.query(
+      `SELECT codigo_verificacion FROM Usuarios WHERE Email = ?`,
+      [Email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ msg: "Correo no existe" });
+    }
+
+    if (rows[0].codigo_verificacion !== codigo) {
+      return res.status(400).json({ msg: "Código incorrecto" });
+    }
+
+    // Actualizar usuario a verificado
+    await pool.query(
+      `UPDATE Usuarios SET verificado = 1 WHERE Email = ?`,
+      [Email]
+    );
+
+    res.json({ msg: "Correo verificado correctamente 🎉" });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Error al verificar código" });
+  }
+};

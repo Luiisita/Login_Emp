@@ -88,7 +88,7 @@ function Login() {
         <p className="p">Inicia Sesión</p>
         <p className="inicio">
           ¿Es tu primera vez?{" "}
-          <a href="http://127.0.0.1:5500/Index_2.html">Regístrate</a>
+          <a href="http://localhost:5173/register">Regístrate</a>
         </p>
         <img
           src="/assets/image_1.png"

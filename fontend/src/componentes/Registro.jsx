@@ -7,6 +7,7 @@ export default function Register() {
   const [form, setForm] = useState({
     nombre: "",
     email: "",
+    telefono: "",
     contraseña: "",
     rol: ""
   });
@@ -23,6 +24,7 @@ export default function Register() {
   const togglePassword = () => setShowPassword(!showPassword);
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+<<<<<<< HEAD
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,6 +47,36 @@ export default function Register() {
       alert(error.response?.data?.message || "❌ Error al registrar usuario");
     }
   };
+=======
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post("http://localhost:4000/api/Usuarios/register", {
+      Nombre: form.nombre,
+      Email: form.email,
+      Telefono: form.telefono || null,
+      Contraseña: form.contraseña,
+      Rol: form.rol || "Usuario",
+      Estado: form.estado || "Activo"
+    });
+
+    alert("✅ Usuario registrado con éxito");
+
+    setForm({
+      nombre: "",
+      email: "",
+      telefono: "",
+      contraseña: "",
+      rol: ""
+    });
+
+  } catch (error) {
+    // 🔥 ESTA ES LA LÍNEA CORRECTA QUE DEBES PONER
+    alert(error.response?.data?.msg || "❌ Error al registrar usuario");
+  }
+};
+
+>>>>>>> 3fbab8f (Subiendo Registro completo)
 
   return (
     <>
@@ -159,6 +191,9 @@ export default function Register() {
         <img src="/assets/Logo_Empren.png" alt="Logo" className="logo" />
       </header>
 
+
+{/*  INPUTS */}
+
       <div className="container">
         <p className="p">Registro</p>
         <form onSubmit={handleSubmit} autoComplete="off" noValidate>
@@ -180,6 +215,21 @@ export default function Register() {
             required
             autoComplete="off"
           />
+          <input
+            type="text"
+            name="telefono"
+            value={form.telefono}
+            onChange={handleChange}
+            placeholder="Teléfono"
+            required
+            maxLength="10"
+            pattern="[0-9]*"
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            }}
+          />
+
+
           <div className="input-group">
             <input
               type={showPassword ? "text" : "password"}
@@ -211,9 +261,13 @@ export default function Register() {
           </button>
         </form>
         <p className="registro">
-          ¿Ya tienes cuenta? <Link to="/">Inicia sesión</Link>
+          ¿Ya tienes cuenta? <Link to="http://localhost:5173/">Inicia sesión</Link>
         </p>
       </div>
     </>
   );
 }
+
+
+
+

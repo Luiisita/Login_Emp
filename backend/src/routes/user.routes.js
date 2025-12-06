@@ -19,6 +19,8 @@ router.post("/register", registerUsarios);     // Registrar usuario + enviar có
 router.post("/verify", verifyEmailCode);       // Verificar código de email
 router.post("/login", loginUsarios);           // Iniciar sesión
 
+
+
 // 🌟 CRUD DE USUARIOS (protegido con token)
 router.get("/", verificarToken, getUsarios);               // Obtener todos
 router.get("/:id", verificarToken, getUsariosByIdController);  

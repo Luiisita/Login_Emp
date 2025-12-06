@@ -2,6 +2,9 @@ import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { sendVerificationEmail } from "../utils/sendEmail.js";
+import { pool } from "../config/db.js";
+
 
 // ===============================
 // CONFIGURAR TRANSPORT DE EMAIL
@@ -46,7 +49,7 @@ export const registerUsarios = async (req, res) => {
 
         // Enviar el email
         await transporter.sendMail({
-            from: "Emprendly ✔️",
+            from: `"Emprendly ✔️" <${process.env.EMAIL_USER}>`,
             to: Email,
             subject: "Código de verificación",
             text: `Tu código de verificación es: ${verificationCode}`
@@ -60,46 +63,48 @@ export const registerUsarios = async (req, res) => {
     }
 };
 
-// ===============================
-// VERIFICAR CÓDIGO
-// ===============================
-export const verifyEmailCode = async (req, res) => {
-    const { Email, code } = req.body;
 
-    try {
-        const [user] = await db.query(
-            `SELECT * FROM Usuarios WHERE Email = ?`,
-            [Email]
-        );
 
-        if (user.length === 0) {
-            return res.status(404).json({ msg: "Usuario no encontrado" });
-        }
+        // ===============================
+        // VERIFICAR CÓDIGO
+        // ===============================
+        export const verifyEmailCode = async (req, res) => {
+            const { Email, codigo } = req.body;
 
-        const u = user[0];
+            try {
+                const [user] = await db.query(
+                    `SELECT * FROM Usuarios WHERE Email = ?`,
+                    [Email]
+                );
 
-        if (u.verification_code !== code) {
-            return res.status(400).json({ msg: "Código incorrecto" });
-        }
+                if (user.length === 0) {
+                    return res.status(404).json({ msg: "Usuario no encontrado" });
+                }
 
-        if (new Date(u.verification_expires_at) < new Date()) {
-            return res.status(400).json({ msg: "El código expiró" });
-        }
+                const u = user[0];
 
-        await db.query(
-            `UPDATE Usuarios 
-             SET is_verified = 1, verification_code = NULL, verification_expires_at = NULL
-             WHERE Email = ?`,
-             [Email]
-        );
+                if (u.verification_code !== codigo) {
+                    return res.status(400).json({ msg: "Código incorrecto" });
+                }
 
-        res.json({ msg: "Correo verificado correctamente" });
+                if (new Date(u.verification_expires_at) < new Date()) {
+                    return res.status(400).json({ msg: "El código expiró" });
+                }
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ msg: "Error en el servidor" });
-    }
-};
+                await db.query(
+                    `UPDATE Usuarios 
+                    SET is_verified = 1, verification_code = NULL, verification_expires_at = NULL
+                    WHERE Email = ?`,
+                    [Email]
+                );
+
+                res.json({ msg: "Correo verificado correctamente" });
+
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({ msg: "Error en el servidor" });
+            }
+        };
 
 // ===============================
 // LOGIN
@@ -140,8 +145,8 @@ export const loginUsarios = async (req, res) => {
             token,
             usuario: {
                 id: user.Id_Usuarios,
-                nombre: user.Nombre,
-                email: user.Email,
+                Nombre: user.Nombre,
+                Email: user.Email,
                 rol: user.Rol
             }
         });

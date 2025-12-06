@@ -2,6 +2,8 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./componentes/Login";
 import Registro from "./componentes/Registro";
+import Verify from "./componentes/Verify";
+
 
 function App() {
   return (
