@@ -24,30 +24,6 @@ export default function Register() {
   const togglePassword = () => setShowPassword(!showPassword);
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-<<<<<<< HEAD
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-     await axios.post("http://localhost:4000/api/Usuarios/register", {
-      Nombre: form.nombre,
-      Email: form.email,
-      Telefono: null,               // porque tu formulario NO lo pide
-       Contraseña: form.contraseña,
-       Rol: form.rol,
-       Estado: "Activo"              // si tu tabla lo requiere
-});
-      alert("✅ Usuario registrado con éxito");
-      setForm({
-        nombre: "",
-        email: "",
-        contraseña: "",
-        rol: ""
-      });
-    } catch (error) {
-      alert(error.response?.data?.message || "❌ Error al registrar usuario");
-    }
-  };
-=======
  const handleSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -76,7 +52,6 @@ export default function Register() {
   }
 };
 
->>>>>>> 3fbab8f (Subiendo Registro completo)
 
   return (
     <>
