@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import "./registro.css";
+
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -9,10 +10,14 @@ export default function Register() {
     email: "",
     telefono: "",
     contraseña: "",
-    rol: ""
+    rol: "",
+    estado: ""
+
   });
   const [showPassword, setShowPassword] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setForm({
@@ -36,7 +41,11 @@ export default function Register() {
       Estado: form.estado || "Activo"
     });
 
+    localStorage.setItem("emailToVerify", form.email);
+
     alert("✅ Usuario registrado con éxito");
+    navigate("/verify");
+
 
     setForm({
       nombre: "",
@@ -234,6 +243,7 @@ export default function Register() {
           <button type="submit" className="loginBtn">
             Registrarse
           </button>
+          
         </form>
         <p className="registro">
           ¿Ya tienes cuenta? <Link to="http://localhost:5173/">Inicia sesión</Link>

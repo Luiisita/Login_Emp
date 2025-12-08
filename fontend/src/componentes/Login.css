@@ -1,71 +1,154 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-image: linear-gradient(to right, #f0c2be, #f0e1bc);
+  background: linear-gradient(135deg, #E5DED3, #CADBEC);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 90px 20px 20px 20px;
+  box-sizing: border-box;
 }
+
 .container {
-  max-width: 300px;
+  max-width: 380px;
+  width: 90%;
   margin: 0 auto;
   text-align: center;
-  padding: 20px;
-  background-image: linear-gradient(to right, #f0e1bc, #f0c2be);
-  border-radius: 10px;
+  padding: 40px 35px;
+  background: linear-gradient(135deg, #F5F6F7, #E5DED3);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
 }
+
 .p {
   text-align: center;
-  background-color: linear-gradient(to right, #f0e1bc, #f0c2be);
-  color: #3f3d3d;
-  font-size: 30px;
+  color: #B6A999;
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
+
+.registro {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #B6A999;
+}
+
+.registro a {
+  color: #CADBEC;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.registro a:hover {
+  color: #B6A999;
+  text-decoration: underline;
+}
+
 form {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: left;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
+
 label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  color: #B6A999;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  text-align: left;
 }
+
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px 15px;
   margin-bottom: 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  background-color: #809fe1;
-  color: #ffffff;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 2px solid #E5DED3;
+  background-color: #ffffff;
+  color: #000000;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
-button {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  background-color: #6c557a;
-  color: rgb(255, 254, 254);
-  cursor: pointer;
-  width: 100%;
+
+input:focus {
+  outline: none;
+  border-color: #B6A999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(182, 169, 153, 0.1);
 }
-::placeholder {
-  color: #ffffff;
-  opacity: 1;
+
+input::placeholder {
+  color: #B6A999;
+  opacity: 0.6;
 }
+
 .input-group {
   position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
+
+.input-group input {
+  margin-bottom: 0;
+  padding-right: 45px;
+}
+
 .input-group i {
   position: absolute;
-  right: 0px;
+  right: 15px;
   top: 50%;
-  transform: translateY(-100%);
-  cursor: alias;
-  color: #f5f5f5;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #B6A999;
+  font-size: 18px;
+  transition: color 0.3s;
 }
+
+.input-group i:hover {
+  color: #9a8d7f;
+}
+
 #togglePassword::after {
   content: none !important;
+}
+
+button {
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #B6A999, #9a8d7f);
+  color: #ffffff;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #9a8d7f, #877a6d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(182, 169, 153, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 /* Barra superior */
@@ -74,16 +157,17 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 8px 15px;
-  background: linear-gradient(to right, #f4c3d2, #dacfb1);
+  background: linear-gradient(to right, #B6A999, #CADBEC);
   height: 65px;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
   border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 55px;
+  border-bottom-right-radius: 15px;
   position: fixed;
   top: 0;
   left: 0;
-  width: calc(100% - 30px);
+  width: 100%;
   z-index: 100;
+  box-sizing: border-box;
 }
 
 .menu-icon {
@@ -94,9 +178,18 @@ button {
 }
 
 .barra-superior .logo {
-  height: 87px;
+  height: 70px;
+  width: 70px;
+  background-color: #F4E1B6;
+  border-radius: 10px;
+  display: flex;
   align-items: center;
-  padding: 0 0;
+  justify-content: center;
+  font-weight: bold;
+  color: #B6A999;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
 }
 
 /* Menú lateral */
@@ -188,20 +281,137 @@ button {
   display: block;
 }
 
-.recuperar,
-.registro {
+.recuperar {
   font-size: 14px;
-  margin-top: 10px;
-  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #E5DED3;
 }
-.recuperar a,
-.inicio a {
-  color: #6c557a;
+
+.recuperar a {
+  color: #CADBEC;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s;
 }
-.recuperar a:hover,
-.inicio a:hover {
+
+.recuperar a:hover {
+  color: #B6A999;
   text-decoration: underline;
-  font-size: 16px;
+}
+
+/* Responsive para celulares */
+@media (max-width: 768px) {
+  body {
+    padding: 80px 15px 15px 15px;
+  }
+  
+  .barra-superior {
+    padding: 8px 12px;
+    height: 60px;
+  }
+  
+  .barra-superior .logo {
+    height: 55px;
+    width: 55px;
+    font-size: 14px;
+  }
+  
+  .menu-icon {
+    font-size: 65px;
+  }
+  
+  .menu-lateral {
+    width: 80%;
+    max-width: 280px;
+    left: -100%;
+  }
+  
+  .container {
+    max-width: 95%;
+    width: 95%;
+    padding: 35px 25px;
+  }
+  
+  form {
+    max-width: 100%;
+  }
+  
+  .p {
+    font-size: 24px;
+  }
+  
+  .registro {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  button {
+    padding: 13px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 70px 10px 10px 10px;
+  }
+  
+  .barra-superior {
+    height: 58px;
+    padding: 6px 10px;
+  }
+  
+  .barra-superior .logo {
+    height: 50px;
+    width: 50px;
+    font-size: 12px;
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    padding: 5px 8px;
+  }
+  
+  .container {
+    max-width: 98%;
+    width: 98%;
+    padding: 30px 20px;
+  }
+  
+  .p {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  
+  .registro {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+  
+  input {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+  
+  button {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .recuperar {
+    font-size: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  
+  .recuperar a {
+    font-size: 12px;
+  }
 }

@@ -1,19 +1,14 @@
 import nodemailer from "nodemailer";
 
 export const sendVerificationEmail = async (to, code) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "lualgual33@gmail.com", 
-      pass: "bsumcbsxyynujepk" 
-    },
-  });
-
   await transporter.sendMail({
-    from: '"Emprenddly" <lualgual33@gmail.com>',
+    from: process.env.EMAIL_USER,
     to: to,
-    subject: "Código de verificación",
-    text: `Tu código de verificación es: ${code}`,
-    html: `<h3>Tu código de verificación es:</h3><h1>${code}</h1>`
+    subject: "Codigo de verificacion",
+    text: "Tu codigo de verificacion es: " + code,
+    html: `
+      <p>Tu codigo de verificacion es:</p>
+      <h1>${code}</h1>
+    `
   });
 };

@@ -7,49 +7,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  /* Posicionamiento y tamaño del body en React */
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
-  /* El resto del contenido de la página se centrará dentro de este div */
+  padding: 90px 20px 20px 20px;
+  box-sizing: border-box;
 }
 
 .barra-superior {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 15px;
+  padding: 8px 30px 8px 15px;
   background: linear-gradient(to right, #B6A999, #CADBEC);
   height: 65px;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
   border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 55px;
+  border-bottom-right-radius: 15px;
   position: fixed;
   top: 0;
   left: 0;
-  width: calc(100% - 30px);
+  width: 100%;
   z-index: 100;
+  box-sizing: border-box;
 }
+
 .menu-icon {
   cursor: pointer;
   font-size: 30px;
   color: #F5F6F7;
   padding: 5px 10px;
 }
+
 .barra-superior .logo {
-  height: 60px;
-  width: 60px;
+  height: 90px;
+  width: 80px;
   background-color: #F4E1B6;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   color: #B6A999;
-  font-size: 14px;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  margin-right: 20px;
 }
+
 .menu-lateral {
   position: fixed;
   left: -280px;
@@ -62,9 +69,11 @@
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   padding: 20px;
 }
+
 .menu-lateral.active {
   left: 0;
 }
+
 .menu-header {
   display: flex;
   align-items: center;
@@ -72,17 +81,20 @@
   padding-bottom: 15px;
   border-bottom: 2px solid #B6A999;
 }
+
 .menu-close {
   font-size: 28px;
   cursor: pointer;
   color: #B6A999;
   margin-right: 15px;
 }
+
 .menu-title {
   font-size: 24px;
   font-weight: bold;
   color: #B6A999;
 }
+
 .menu-logo-small {
   width: 40px;
   height: 40px;
@@ -90,14 +102,17 @@
   border-radius: 5px;
   margin-left: auto;
 }
+
 .menu-lateral ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 .menu-lateral li {
   margin-bottom: 15px;
 }
+
 .menu-lateral a {
   text-decoration: none;
   color: #B6A999;
@@ -107,11 +122,13 @@
   border-radius: 5px;
   transition: all 0.3s;
 }
+
 .menu-lateral a:hover {
   background-color: #CADBEC;
   color: #000000;
   transform: translateX(5px);
 }
+
 .overlay {
   display: none;
   position: fixed;
@@ -122,19 +139,25 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 150;
 }
+
 .overlay.active {
   display: block;
 }
+
 .container {
-  max-width: 320px;
-  /* El margin: 0 auto centrará el contenedor dentro del body con display: flex */
-  /* margin: 0 auto; - Ya no es necesario si el body tiene display: flex, justify-content: center, align-items: center */
+  max-width: 420px;
+  width: 90%;
   text-align: center;
-  padding: 30px;
-  background: linear-gradient(135deg, #E5DED3, #F4E1B6);
+  padding: 40px 35px;
+  background: linear-gradient(135deg, #F5F6F7, #E5DED3);
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
 }
+
 .p {
   text-align: center;
   color: #B6A999;
@@ -142,91 +165,289 @@
   margin-bottom: 25px;
   font-weight: bold;
 }
+
 form {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: left;
-  width: 100%;
+  width: 75%;
+  max-width: 350px;
+  margin: 0 auto;
 }
+
 label {
   display: block;
   margin-bottom: 8px;
   color: #B6A999;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  width: 100%;
+  text-align: left;
 }
+
 input, select {
-  width: 95%;
-  padding: 12px;
+  width: 100%;
+  padding: 12px 15px;
   margin-bottom: 20px;
   font-size: 15px;
   border-radius: 8px;
-  border: 1px solid #CADBEC;
-  background-color: #F5F6F7;
+  border: 2px solid #E5DED3;
+  background-color: #ffffff;
   color: #000000;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
+
 input:focus, select:focus {
   outline: none;
   border-color: #B6A999;
   background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(182, 169, 153, 0.1);
 }
-/* Para usar ::placeholder en módulos CSS, se usa :global */
-/* Si tu configuración de módulos CSS lo permite, puedes usarlo así: */
-/*
-:global(::placeholder) {
+
+input::placeholder {
   color: #B6A999;
   opacity: 0.6;
-}
-*/
-/* Si no, debes apuntar a los elementos directamente: */
-input::placeholder {
-    color: #B6A999;
-    opacity: 0.6;
 }
 
 .input-group {
   position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
+
+.input-group input {
+  margin-bottom: 0;
+  padding-right: 45px;
+}
+
 .input-group i {
   position: absolute;
-  right: 10px;
-  top: 35%;
+  right: 15px;
+  top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   color: #B6A999;
+  font-size: 18px;
+  transition: color 0.3s;
 }
+
+.input-group i:hover {
+  color: #9a8d7f;
+}
+
 .loginBtn {
   margin-top: 10px;
-  padding: 12px;
+  padding: 14px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
   font-size: 16px;
-  background-color: #CADBEC;
-  color: #000000;
+  background: linear-gradient(135deg, #B6A999, #9a8d7f);
+  color: #ffffff;
   font-weight: bold;
   transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
 .loginBtn:hover {
-  background-color: #B6A999;
-  color: #F5F6F7;
+  background: linear-gradient(135deg, #9a8d7f, #877a6d);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(182, 169, 153, 0.3);
 }
+
+.loginBtn:active {
+  transform: translateY(0);
+}
+
 .registro {
-  margin-top: 20px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #E5DED3;
 }
+
 .registro p {
   color: #B6A999;
   font-size: 14px;
+  margin-bottom: 5px;
 }
+
 .registro a {
   color: #CADBEC;
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
+  transition: all 0.3s;
 }
+
 .registro a:hover {
-  text-decoration: underline;
   color: #B6A999;
+  text-decoration: underline;
+}
+
+/* Responsive para celulares */
+@media (max-width: 768px) {
+  .body {
+    padding: 80px 15px 15px 15px;
+  }
+  
+  .barra-superior {
+    padding: 8px 12px;
+    height: 60px;
+  }
+  
+  .barra-superior .logo {
+    height: 60px;
+    width: 60px;
+    font-size: 14px;
+  }
+  
+  .menu-icon {
+    font-size: 26px;
+  }
+  
+  .menu-lateral {
+    width: 80%;
+    max-width: 280px;
+    left: -100%;
+  }
+  
+  .container {
+    max-width: 95%;
+    width: 95%;
+    padding: 35px 25px;
+    margin: 0 auto;
+    max-height: calc(100vh - 110px);
+  }
+  
+  form {
+    max-width: 320px;
+  }
+  
+  .p {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 13px;
+  }
+  
+  input, select {
+    padding: 12px 14px;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  
+  .input-group input {
+    padding-right: 45px;
+  }
+  
+  .input-group i {
+    right: 14px;
+    font-size: 16px;
+  }
+  
+  .loginBtn {
+    padding: 13px;
+    font-size: 15px;
+    margin-top: 8px;
+  }
+  
+  .registro {
+    margin-top: 20px;
+    padding-top: 18px;
+  }
+  
+  .registro p {
+    font-size: 13px;
+  }
+  
+  .registro a {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .body {
+    padding: 70px 10px 10px 10px;
+  }
+  
+  .barra-superior {
+    height: 58px;
+    padding: 6px 10px;
+  }
+  
+  .barra-superior .logo {
+    height: 50px;
+    width: 50px;
+    font-size: 12px;
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    padding: 5px 8px;
+  }
+  
+  .container {
+    max-width: 98%;
+    width: 98%;
+    padding: 30px 20px;
+    margin: 0 auto;
+    max-height: calc(100vh - 90px);
+  }
+  
+  form {
+    max-width: 100%;
+  }
+  
+  .p {
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+  
+  label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  
+  input, select {
+    padding: 11px 12px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .input-group input {
+    padding-right: 42px;
+  }
+  
+  .input-group i {
+    right: 12px;
+    font-size: 15px;
+  }
+  
+  .loginBtn {
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .registro {
+    margin-top: 18px;
+    padding-top: 15px;
+  }
+  
+  .registro p {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  
+  .registro a {
+    font-size: 12px;
+  }
 }

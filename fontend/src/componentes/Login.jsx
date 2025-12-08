@@ -54,10 +54,7 @@ function Login() {
 
   return (
     <>
-      {/* Overlay */}
-      {menuOpen && (
-        <div className="overlay" onClick={toggleMenu}></div>
-      )}
+      
 
       {/* Menú Lateral */}
       <div className={`menu-lateral ${menuOpen ? 'active' : ''}`}>
@@ -90,13 +87,7 @@ function Login() {
           ¿Es tu primera vez?{" "}
           <a href="http://localhost:5173/register">Regístrate</a>
         </p>
-        <img
-          src="/assets/image_1.png"
-          alt=""
-          height="200"
-          width="200"
-          id="tabla"
-        />
+        
         <form onSubmit={handleSubmit} autoComplete="off">
           
           {/* CAMPO Email */}

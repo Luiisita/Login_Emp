@@ -1,9 +1,10 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import axios from "axios";
 import "./Verify.css";
+
+
 
 
 export default function VerificarCodigo() {
@@ -14,15 +15,15 @@ export default function VerificarCodigo() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:4000/api/Usuarios/verificar", {
+        await axios.post("http://localhost:4000/api/Usuarios/verify", {
         Email: Email,
-        Codigo: codigo
+        codigo: codigo
       });
 
       alert("Correo verificado correctamente 🎉");
     } catch (err) {
-      alert("Error: " + err.response.data.message);
-    }
+  console.log(err.response.data);
+}
   };
 
   return (

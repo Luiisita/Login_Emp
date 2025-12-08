@@ -1,0 +1,135 @@
+/* Contenedor principal del formulario */
+form {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 40px;
+  background: #F5F6F7;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(182, 169, 153, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título del formulario */
+form h2 {
+  text-align: center;
+  color: #B6A999;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* Estilos para los inputs */
+form input[type="email"],
+form input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 2px solid #E5DED3;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+/* Efecto focus en los inputs */
+form input[type="email"]:focus,
+form input[type="text"]:focus {
+  outline: none;
+  border-color: #B6A999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(182, 169, 153, 0.15);
+}
+
+/* Placeholder styling */
+form input::placeholder {
+  color: #B6A999;
+  opacity: 0.6;
+  font-size: 15px;
+}
+
+/* Botón de submit */
+form button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #B6A999 0%, #9a8d7f 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Efecto hover en el botón */
+form button[type="submit"]:hover {
+  background: linear-gradient(135deg, #9a8d7f 0%, #877a6d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(182, 169, 153, 0.3);
+}
+
+/* Efecto active en el botón */
+form button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(182, 169, 153, 0.2);
+}
+
+/* Responsive para móviles */
+@media (max-width: 480px) {
+  form {
+    margin: 40px 20px;
+    padding: 30px 20px;
+  }
+  
+  form h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  form input[type="email"],
+  form input[type="text"] {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+  
+  form button[type="submit"] {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
+
+/* Animación para cuando aparece el formulario */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilos para los estados de validación */
+form input:invalid:not(:placeholder-shown) {
+  border-color: #e74c3c;
+}
+
+form input:valid:not(:placeholder-shown) {
+  border-color: #B6A999;
+}
+
+/* Backdrop opcional para el fondo de la página */
+body {
+  background: linear-gradient(135deg, #CADBEC 0%, #B6A999 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}

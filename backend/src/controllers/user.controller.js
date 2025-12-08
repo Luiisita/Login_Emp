@@ -2,7 +2,6 @@ import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { sendVerificationEmail } from "../utils/sendEmail.js";
 import { pool } from "../config/db.js";
 
 
@@ -23,6 +22,10 @@ const transporter = nodemailer.createTransport({
 // ===============================
 export const registerUsarios = async (req, res) => {
     const { Nombre, Email, Telefono, Contraseña, Rol, Estado } = req.body;
+
+    console.log("BODY COMPLETO:", req.body);
+    console.log("Email recibido:", req.body.Email);
+
 
     try {
         const [exist] = await db.query(
